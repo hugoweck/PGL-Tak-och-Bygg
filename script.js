@@ -297,23 +297,54 @@ const initProjectCardAnimation = () => {
       const comesFromLeft = index % 2 === 0;
       card.classList.add('reveal-side-mobile');
       card.style.setProperty('--slide-direction', comesFromLeft ? '-1' : '1');
+      card.classList.remove('is-visible');
     });
 
-    const mobileProjectObserver = new IntersectionObserver(
+    let revealTimers = [];
+
+    const clearRevealTimers = () => {
+      revealTimers.forEach((timer) => window.clearTimeout(timer));
+      revealTimers = [];
+    };
+
+    const playMobileReveal = () => {
+      clearRevealTimers();
+
+      projectCards.forEach((card, index) => {
+        const timer = window.setTimeout(() => {
+          card.classList.add('is-visible');
+        }, index * 90);
+        revealTimers.push(timer);
+      });
+    };
+
+    const resetMobileReveal = () => {
+      clearRevealTimers();
+      projectCards.forEach((card) => {
+        card.classList.remove('is-visible');
+      });
+    };
+
+    const mobileSectionObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add('is-visible');
-          mobileProjectObserver.unobserve(entry.target);
+          if (entry.target !== projectSection) return;
+
+          if (entry.isIntersecting) {
+            playMobileReveal();
+            return;
+          }
+
+          resetMobileReveal();
         });
       },
       {
-        threshold: 0.35,
-        rootMargin: '0px 0px -8% 0px'
+        threshold: 0.32,
+        rootMargin: '0px 0px -12% 0px'
       }
     );
 
-    projectCards.forEach((card) => mobileProjectObserver.observe(card));
+    mobileSectionObserver.observe(projectSection);
     return;
   }
 
