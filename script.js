@@ -343,8 +343,8 @@ const initProcessAnimation = () => {
   const processSection = document.querySelector('#process');
   const processWrap = processSection?.querySelector('[data-process]');
   const processSteps = processSection ? [...processSection.querySelectorAll('[data-step]')] : [];
-  const disableProcessAnimation = prefersReducedMotion || isLowPowerDevice;
   const isMobileProcessView = window.matchMedia('(max-width: 720px)').matches;
+  const disableProcessAnimation = prefersReducedMotion || (isLowPowerDevice && !isMobileProcessView);
 
   if (!processSection || !processWrap || !processSteps.length) return;
 
@@ -376,8 +376,8 @@ const initProcessAnimation = () => {
         });
       },
       {
-        threshold: 0.35,
-        rootMargin: '0px 0px -12% 0px'
+        threshold: 0.2,
+        rootMargin: '0px 0px -8% 0px'
       }
     );
 
