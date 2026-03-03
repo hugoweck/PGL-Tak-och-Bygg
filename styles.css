@@ -1100,9 +1100,16 @@ h2 {
   .process.process-mobile-animate .step.is-mobile-visible.is-pending,
   .process.process-mobile-animate .step.is-mobile-visible.is-done {
     opacity: 1;
-    color: rgba(0, 0, 0, 0.92);
     transform: translateY(0) scale(1);
     filter: blur(0);
+  }
+
+  .process.process-mobile-animate .step.is-mobile-visible.is-pending {
+    color: rgba(0, 0, 0, 0.55);
+  }
+
+  .process.process-mobile-animate .step.is-mobile-visible.is-done {
+    color: rgba(0, 0, 0, 0.92);
   }
 
   .process.process-mobile-animate .step-dot {
