@@ -1083,6 +1083,52 @@ h2 {
     column-gap: 0.78rem;
   }
 
+  .process.process-mobile-animate .step,
+  .process.process-mobile-animate .step.is-pending,
+  .process.process-mobile-animate .step.is-done {
+    opacity: 0;
+    transform: translateY(26px) scale(0.96);
+    filter: blur(6px);
+    transition:
+      opacity 420ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+      filter 420ms ease;
+    transition-delay: var(--step-delay, 0ms);
+  }
+
+  .process.process-mobile-animate .step.is-mobile-visible,
+  .process.process-mobile-animate .step.is-mobile-visible.is-pending,
+  .process.process-mobile-animate .step.is-mobile-visible.is-done {
+    opacity: 1;
+    color: rgba(0, 0, 0, 0.92);
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+
+  .process.process-mobile-animate .step-dot {
+    transform: scale(0.65);
+    opacity: 0.5;
+    transition: transform 360ms ease, opacity 360ms ease;
+  }
+
+  .process.process-mobile-animate .step.is-mobile-visible .step-dot {
+    opacity: 1;
+    transform: scale(1);
+    animation: processMobileDotPulse 680ms ease;
+  }
+
+  .process.process-mobile-animate .step-num {
+    transform: translateY(8px);
+    opacity: 0;
+    transition: transform 360ms ease, opacity 360ms ease;
+    transition-delay: calc(var(--step-delay, 0ms) + 30ms);
+  }
+
+  .process.process-mobile-animate .step.is-mobile-visible .step-num {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
   .rail-line,
   .rail-progress {
     left: 12px;
@@ -1096,6 +1142,18 @@ h2 {
 
   .step-content {
     padding-top: 0.8rem;
+  }
+}
+
+@keyframes processMobileDotPulse {
+  0% {
+    transform: scale(0.65);
+  }
+  55% {
+    transform: scale(1.16);
+  }
+  100% {
+    transform: scale(1);
   }
 }
 
