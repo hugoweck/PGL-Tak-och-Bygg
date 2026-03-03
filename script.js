@@ -189,16 +189,39 @@ const initServiceCardAnimation = () => {
 
   if (!servicesGrid || !serviceCards.length) return;
 
-  serviceCards.forEach((card, index) => {
-    card.style.setProperty('--stagger-delay', `${index * 90}ms`);
-  });
-
   if (prefersReducedMotion) {
     serviceCards.forEach((card) => card.classList.add('is-visible'));
     return;
   }
 
   const mobile = window.matchMedia('(max-width: 768px)').matches;
+
+  if (mobile) {
+    serviceCards.forEach((card) => {
+      card.style.setProperty('--stagger-delay', '0ms');
+    });
+
+    const mobileCardObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-visible');
+          mobileCardObserver.unobserve(entry.target);
+        });
+      },
+      {
+        threshold: 0.45,
+        rootMargin: '0px 0px -8% 0px'
+      }
+    );
+
+    serviceCards.forEach((card) => mobileCardObserver.observe(card));
+    return;
+  }
+
+  serviceCards.forEach((card, index) => {
+    card.style.setProperty('--stagger-delay', `${index * 90}ms`);
+  });
 
   let revealTimers = [];
 
