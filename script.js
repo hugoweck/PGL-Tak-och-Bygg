@@ -276,17 +276,48 @@ const initProjectCardAnimation = () => {
   const projectCards = [...document.querySelectorAll('.project-grid .project-item')];
   if (!projectSection || !projectCards.length) return;
   const isDesktopViewport = window.matchMedia('(min-width: 769px)').matches;
+  const isMobileViewport = window.matchMedia('(max-width: 768px)').matches;
   let ticking = false;
   let isInView = false;
   let maxOffset = 0;
 
   projectCards.forEach((card) => {
     card.classList.remove('reveal-side-desktop');
+    card.classList.remove('reveal-side-mobile', 'is-visible');
     card.style.removeProperty('--project-shift');
     card.style.removeProperty('--slide-direction');
   });
 
-  if (prefersReducedMotion || !isDesktopViewport) {
+  if (prefersReducedMotion) {
+    return;
+  }
+
+  if (isMobileViewport) {
+    projectCards.forEach((card, index) => {
+      const comesFromLeft = index % 2 === 0;
+      card.classList.add('reveal-side-mobile');
+      card.style.setProperty('--slide-direction', comesFromLeft ? '-1' : '1');
+    });
+
+    const mobileProjectObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-visible');
+          mobileProjectObserver.unobserve(entry.target);
+        });
+      },
+      {
+        threshold: 0.35,
+        rootMargin: '0px 0px -8% 0px'
+      }
+    );
+
+    projectCards.forEach((card) => mobileProjectObserver.observe(card));
+    return;
+  }
+
+  if (!isDesktopViewport) {
     return;
   }
 
