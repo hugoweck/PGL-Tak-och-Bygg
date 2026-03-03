@@ -343,7 +343,8 @@ const initProcessAnimation = () => {
   const processSection = document.querySelector('#process');
   const processWrap = processSection?.querySelector('[data-process]');
   const processSteps = processSection ? [...processSection.querySelectorAll('[data-step]')] : [];
-  const disableProcessAnimation = prefersReducedMotion || isLowPowerDevice;
+  const isMobileProcessView = window.matchMedia('(max-width: 720px)').matches;
+  const disableProcessAnimation = prefersReducedMotion || (isLowPowerDevice && !isMobileProcessView);
 
   if (!processSection || !processWrap || !processSteps.length) return;
 
@@ -359,6 +360,33 @@ const initProcessAnimation = () => {
     processSection.classList.add('process-static');
     processWrap.style.setProperty('--progress', '100%');
     setDoneSteps(processSteps.length - 1);
+    return;
+  }
+
+  if (isMobileProcessView) {
+    processSection.classList.add('process-mobile-animate');
+    processWrap.style.setProperty('--progress', '100%');
+
+    const stepObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-mobile-visible');
+          }
+        });
+      },
+      {
+        threshold: 0.2,
+        rootMargin: '0px 0px -8% 0px'
+      }
+    );
+
+    processSteps.forEach((step, index) => {
+      step.classList.add('is-mobile-pending');
+      step.style.setProperty('--step-delay', `${index * 70}ms`);
+      stepObserver.observe(step);
+    });
+
     return;
   }
 
