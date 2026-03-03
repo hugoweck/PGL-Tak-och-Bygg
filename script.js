@@ -367,25 +367,60 @@ const initProcessAnimation = () => {
     processSection.classList.add('process-mobile-animate');
     processWrap.style.setProperty('--progress', '100%');
 
+    let focusedStepIndex = -1;
+
+    const updateMobileProcessState = () => {
+      const viewportFocusY = window.innerHeight * 0.42;
+      let nextFocusedStepIndex = -1;
+      let closestDistance = Number.POSITIVE_INFINITY;
+
+      processSteps.forEach((step, index) => {
+        const rect = step.getBoundingClientRect();
+        const stepCenter = rect.top + rect.height / 2;
+        const distanceToFocus = Math.abs(stepCenter - viewportFocusY);
+
+        if (distanceToFocus < closestDistance) {
+          closestDistance = distanceToFocus;
+          nextFocusedStepIndex = index;
+        }
+      });
+
+      if (nextFocusedStepIndex === focusedStepIndex) return;
+
+      focusedStepIndex = nextFocusedStepIndex;
+      setDoneSteps(focusedStepIndex);
+    };
+
     const stepObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-mobile-visible');
-          }
+          entry.target.classList.toggle('is-mobile-visible', entry.isIntersecting);
         });
+
+        updateMobileProcessState();
       },
       {
-        threshold: 0.2,
+        threshold: 0.35,
         rootMargin: '0px 0px -8% 0px'
       }
     );
 
     processSteps.forEach((step, index) => {
-      step.classList.add('is-mobile-pending');
+      step.classList.add('is-mobile-pending', 'is-pending');
       step.style.setProperty('--step-delay', `${index * 70}ms`);
       stepObserver.observe(step);
     });
+
+    window.addEventListener(
+      'scroll',
+      () => {
+        updateMobileProcessState();
+      },
+      { passive: true }
+    );
+
+    window.addEventListener('resize', updateMobileProcessState);
+    updateMobileProcessState();
 
     return;
   }
