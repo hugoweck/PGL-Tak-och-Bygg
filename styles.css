@@ -1367,6 +1367,17 @@ h2 {
   transition: transform 0.14s linear;
 }
 
+.project-item.reveal-side-mobile {
+  opacity: 0;
+  transform: translateX(calc(var(--slide-direction, 1) * 42px));
+  transition: transform 0.48s ease, opacity 0.48s ease;
+}
+
+.project-item.reveal-side-mobile.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
 .project-lead {
   line-height: 1.55;
 }
@@ -1426,7 +1437,8 @@ h2 {
 
 @media (prefers-reduced-motion: reduce) {
   .service-card,
-  .project-item.reveal-side-desktop {
+  .project-item.reveal-side-desktop,
+  .project-item.reveal-side-mobile {
     transform: none !important;
   }
 }
@@ -1434,6 +1446,13 @@ h2 {
 @media (min-width: 769px) {
   .project-item.reveal-side-desktop {
     will-change: transform;
+  }
+}
+
+@media (min-width: 769px) {
+  .project-item.reveal-side-mobile {
+    opacity: 1;
+    transform: none;
   }
 }
 
